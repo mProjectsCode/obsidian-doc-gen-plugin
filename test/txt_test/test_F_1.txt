@@ -1,0 +1,27 @@
+Hello, test 123
+
+/**
+* test
+* hallo
+* 123123
+*/
+static const a = 5
+
+asd
+asd
+
+asd
+/**
+* test
+* hallo
+* 12312345
+*/
+public AAA a(test as, asddas as) { }
+
+
+/**
+* test
+* hallo
+* 12312345
+*/
+public a( as: test, as :asddas ): AAA { }
