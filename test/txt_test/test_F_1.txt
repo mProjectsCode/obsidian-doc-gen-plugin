@@ -5,7 +5,7 @@ Hello, test 123
 * hallo
 * 123123
 */
-static const a = 5
+static const a = 5;
 
 asd
 asd
@@ -14,14 +14,23 @@ asd
 /**
 * test
 * hallo
-* 12312345
+* @params ab aaaaaaaaaaa
 */
-public AAA a(test as, asddas as) { }
+public AAA a(test as, asddas ab) {
+	tesadf
+	sdf
+	sdf
+}
 
 
 /**
 * test
 * hallo
-* 12312345
+* @param as aaaaaaaaaaa
 */
-public a( as: test, as :asddas ): AAA { }
+public a( as: test, ab :asddas ): AAA { }
+
+
+
+
+

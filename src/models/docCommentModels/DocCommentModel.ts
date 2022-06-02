@@ -1,23 +1,48 @@
-import {codeAttributes, CodeElementType} from '../../utils/Utils';
+import {codeModifiers, CodeElementType} from '../../utils/Utils';
+import {Markdown} from '../../utils/Markdown';
 
 export class DocCommentModel {
 	originalComment: string;
 	cleanedComment: string;
-	codeSnippet: string;
-	codeAttributes: string[];
+	codeObject: string;
+	codeObjectDeclaration: string;
+	modifiers: string[];
 	type: string;
+	name: string;
+	annotations: {
+		annotation: string,
+		value: string,
+		description: string,
+	}[];
 
-	constructor(comment?: string) {
+	constructor(comment?: string, codeObject?: string) {
 		if (comment) {
 			this.originalComment = comment;
-			this.codeAttributes = [];
+			this.modifiers = [];
 			this.type = 'unknown';
+			this.name = '';
+			this.codeObject = codeObject ?? '';
+			this.codeObjectDeclaration = this.codeObject.replace(/{[\s\S]*}/g, '').trim();
 
 			this.cleanDocComment();
-			this.extractCodeSnippet();
-			this.extractCodeAttributes();
+			// this.extractCodeObject();
+			this.extractModifiers();
 			this.extractType();
+			this.extractAnnotationsFromComment();
 		}
+	}
+
+	analyzeCodeObject() {
+	};
+
+	toString(): string {
+		const heading = Markdown.h3(this.name || Markdown.code(this.getFancyCodeObject()));
+
+		const body = Markdown.codeBlock(this.getFancyCodeObject()) + '\n\n'
+		    + Markdown.blockQuotes(this.getCleanedCommentWithOutAnnotations()) + '\n\n'
+			+ `**Type**: ${this.type}\n`;
+
+		return `${heading}\n${body}`;
 	}
 
 	private cleanDocComment(): void {
@@ -42,7 +67,8 @@ export class DocCommentModel {
 		this.cleanedComment = docComment.trim();
 	}
 
-	private extractCodeSnippet(): void {
+	/*
+	private extractCodeObject(): void {
 		let j = this.originalComment.length - 1;
 		for (let i = this.originalComment.length - 1; i >= 0; i--) {
 			if (this.originalComment[i] === '\n') {
@@ -51,34 +77,35 @@ export class DocCommentModel {
 			}
 		}
 
-		let codeSnippet = this.originalComment.substring(j, this.originalComment.length);
+		let codeObject = this.originalComment.substring(j, this.originalComment.length);
 
-		this.codeSnippet = codeSnippet.trim();
+		this.codeObject = codeObject.trim();
 	}
+	*/
 
-	private extractCodeAttributes () {
-		const codeSnippetParts = this.codeSnippet.split(' ');
+	private extractModifiers(): void {
+		const codeObjectParts = this.codeObjectDeclaration.split(' ');
 
-		for (const codeSnippetPart of codeSnippetParts) {
-			if (codeAttributes.contains(codeSnippetPart)) {
-				this.codeAttributes.push(codeSnippetPart);
+		for (const codeObjectPart of codeObjectParts) {
+			if (codeModifiers.contains(codeObjectPart)) {
+				this.modifiers.push(codeObjectPart);
 			}
 		}
 	}
 
-	private extractType() {
-		const codeSnippetParts = this.codeSnippet.split(' ');
+	private extractType(): void {
+		const codeObjectParts = this.codeObjectDeclaration.split(' ');
 
-		if (codeSnippetParts.contains(CodeElementType.Class)) {
+		if (codeObjectParts.contains(CodeElementType.Class)) {
 			this.type = CodeElementType.Class;
-		} else if (codeSnippetParts.contains(CodeElementType.Interface)) {
+		} else if (codeObjectParts.contains(CodeElementType.Interface)) {
 			this.type = CodeElementType.Interface;
-		} else if (codeSnippetParts.contains(CodeElementType.Enum)) {
+		} else if (codeObjectParts.contains(CodeElementType.Enum)) {
 			this.type = CodeElementType.Enum;
-		} else if (codeSnippetParts.contains(CodeElementType.Function)) {
+		} else if (codeObjectParts.contains(CodeElementType.Function)) {
 			this.type = CodeElementType.Function;
 		} else {
-			let declaration = this.codeSnippet.split('=')[0];
+			let declaration = this.codeObjectDeclaration.split('=')[0];
 
 			const regExp = new RegExp('\\(.*\\)');
 			const matches = declaration.match(regExp);
@@ -93,9 +120,50 @@ export class DocCommentModel {
 		}
 	}
 
-	analyzeCodeSnippet() { };
+	private extractAnnotationsFromComment(): void {
+		const commentLines = this.cleanedComment.split('\n');
 
-	toString() {
-		return this.cleanedComment;
+		this.annotations = [];
+		for (const commentLine of commentLines) {
+			if (!commentLine.startsWith('@')) {
+				continue;
+			}
+
+			const commentLineParts = commentLine.split(' ');
+			this.annotations.push({
+				annotation: commentLineParts[0],
+				value: commentLineParts[1] ?? '',
+				description: commentLineParts[2] ?? '',
+			});
+		}
+	}
+
+	private getCleanedCommentWithOutAnnotations(): string {
+		let cleanedCommentWithOutAnnotations = [];
+
+		for (const cleanedCommentLine of this.cleanedComment.split('\n')) {
+			if (cleanedCommentLine.startsWith('@')) {
+				continue;
+			}
+			cleanedCommentWithOutAnnotations.push(cleanedCommentLine);
+		}
+
+		return cleanedCommentWithOutAnnotations.join('\n');
+	}
+
+	private getFancyCodeObject(): string {
+		if (this.type === CodeElementType.Class) {
+			return this.codeObjectDeclaration + ' { ... }';
+		} else if (this.type === CodeElementType.Interface) {
+			return this.codeObjectDeclaration + ' { ... }';
+		} else if (this.type === CodeElementType.Enum) {
+			return this.codeObjectDeclaration + ' { ... }';
+		} else if (this.type === CodeElementType.Function) {
+			return this.codeObjectDeclaration + ' { ... }';
+		} else if (this.type === CodeElementType.Variable) {
+			return this.codeObjectDeclaration;
+		}
+
+		return this.codeObjectDeclaration;
 	}
 }

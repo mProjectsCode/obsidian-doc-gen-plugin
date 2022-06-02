@@ -18,7 +18,18 @@ export function replaceIllegalFileNameCharactersInString(string: string): string
 	return string.replace(/[\\,#%&{}/*<>$"@.?]*/g, '').replace(/:+/g, ' -');
 }
 
-export const codeAttributes = [
+export function trimCharacters(str: string, char: string): string {
+	if (str.startsWith(char)) {
+		str = str.substring(char.length);
+	}
+	if (str.endsWith(char)) {
+		str = str.substring(0, str.length - char.length);
+	}
+
+	return str;
+}
+
+export const codeModifiers = [
 	'public',
 	'private',
 	'protected',

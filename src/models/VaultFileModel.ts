@@ -21,5 +21,13 @@ export class VaultFileModel {
 		return content;
 	}
 
+	getMdFileName() {
+		return this.path.split('.')[0] + '.md';
+	}
+
+	getFolderPath() {
+		return this.path.split('/').slice(0, -1).join('/');
+	}
+
 
 }

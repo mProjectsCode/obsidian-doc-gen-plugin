@@ -1,0 +1,21 @@
+/**
+* test
+* hallo
+* 12312345
+* @annotation
+*/
+public const BBB b = 123;
+
+
+/**
+* test
+* hallo
+* 12312345
+* @annotation test
+*/
+public const b: BBB = 123;
+
+/**
+* @annotation test aaaaaaaaaaa
+*/
+public const b: BBB;
