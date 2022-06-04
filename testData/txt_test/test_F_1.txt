@@ -29,30 +29,37 @@ Hello, test 123
 */
 static const a = 5;
 
-asd
-asd
+normal code test
 
-asd
+
 /**
-* test
-* hallo
-* @params ab aaaaaaaaaaa
+* normal function test
+* @author Max Musteman
+* @author Meier
+* @deprecated
+* @name DeprecatedTestFunction
 */
-public AAA a(test as, asddas ab) {
-	tesadf
-	sdf
-	sdf
+public Test test1(Test param) {
+	test.test
 }
 
+/**
+* normal function test with bracket on new line
+* @param param a test parameter
+*/
+public Test test2(Test param)
+{
+	test.test
+}
 
 /**
-* test
-* hallo
-* @params ab aaaaaaaaaaa
+* normal function test without body, with semicolon
+* @param param a test parameter
 */
-public AAA asdc(test as, asddas ab);
+public Test test3(Test param);
 
-
-
-
+/**
+* normal function test without body
+*/
+public Test test3(Test param)
 

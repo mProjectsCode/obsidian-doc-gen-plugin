@@ -24,7 +24,7 @@ export default class DocGenPlugin extends Plugin {
 
 	async runTests() {
 		const testFileLoader = new TestFileLoader();
-		const dirModel = await testFileLoader.load('H:/src/obsidian-doc-gen-plugin/test/txt_test');
+		const dirModel = await testFileLoader.load('H:/src/obsidian-doc-gen-plugin/testData/txt_test');
 		const fileParser = new FileParser();
 		const vaultDirModel = await fileParser.parseDirectory(dirModel);
 		console.log(vaultDirModel);

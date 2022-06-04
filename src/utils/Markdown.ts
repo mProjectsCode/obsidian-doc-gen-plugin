@@ -51,9 +51,55 @@ export class Markdown {
 		return '> ' + content.split('\n').join('\n> ');
 	}
 
-	// TODO: implement
-	static tables(content: string[][]): string {
-		return '';
+	static table(content: string[][]): string {
+		let rows = content.length;
+		if (rows === 0) {
+			return '';
+		}
+
+		let columns = content[0].length;
+		if (columns === 0) {
+			return '';
+		}
+		for (const row of content) {
+			if (row.length !== columns) {
+				return '';
+			}
+		}
+
+		let longestStringInColumns = [];
+
+		for (let i = 0; i < columns; i++) {
+			let longestStringInColumn = 0;
+			for (const row of content) {
+				if (row[i].length > longestStringInColumn) {
+					longestStringInColumn = row[i].length;
+				}
+			}
+
+			longestStringInColumns.push(longestStringInColumn);
+		}
+
+		let table = '';
+
+		for (let i = 0; i < rows; i++) {
+			table += '|';
+			for (let j = 0; j < columns; j++) {
+				let element = content[i][j];
+				element += ' '.repeat(longestStringInColumns[j] - element.length);
+				table += ' ' + element + ' |';
+			}
+			table += '\n';
+			if (i === 0) {
+				table += '|';
+				for (let j = 0; j < columns; j++) {
+					table += ' ' + '-'.repeat(longestStringInColumns[j]) + ' |';
+				}
+				table += '\n';
+			}
+		}
+
+		return table;
 	}
 
 	static list(content: string[]): string {

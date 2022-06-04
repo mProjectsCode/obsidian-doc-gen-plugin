@@ -1,4 +1,4 @@
-import {DocCommentModel} from './docCommentModels/DocCommentModel';
+import {DocCommentModel} from './DocCommentModel';
 
 export class VaultFileModel {
 	path: string;

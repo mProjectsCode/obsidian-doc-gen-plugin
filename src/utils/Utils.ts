@@ -19,10 +19,10 @@ export function replaceIllegalFileNameCharactersInString(string: string): string
 }
 
 export function trimCharacters(str: string, char: string): string {
-	if (str.startsWith(char)) {
+	while (str.startsWith(char)) {
 		str = str.substring(char.length);
 	}
-	if (str.endsWith(char)) {
+	while (str.endsWith(char)) {
 		str = str.substring(0, str.length - char.length);
 	}
 
