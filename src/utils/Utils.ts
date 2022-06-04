@@ -29,6 +29,22 @@ export function trimCharacters(str: string, char: string): string {
 	return str;
 }
 
+export function indexToLineNumber(str: string, index: number) {
+	if (index >= str.length) {
+		return 0;
+	}
+
+	let linebreaks = 1;
+
+	for (let i = 0; i < index + 1; i++) {
+		if (str[i] === '\n') {
+			linebreaks += 1;
+		}
+	}
+
+	return linebreaks;
+}
+
 export const codeModifiers = [
 	'public',
 	'private',
@@ -40,7 +56,7 @@ export const codeModifiers = [
 	'override',
 ];
 
-export enum CodeElementType {
+export enum CodeObjectType {
 	Class = 'class',
 	Interface = 'interface',
 	Enum = 'enum',

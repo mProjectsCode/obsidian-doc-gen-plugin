@@ -1,9 +1,31 @@
 Hello, test 123
 
 /**
-* test
-* hallo
-* 123123
+* Draws as much of the specified image as is currently available
+* with its northwest corner at the specified coordinate (x, y).
+* This method will return immediately in all cases, even if the
+* entire image has not yet been scaled, dithered and converted
+* for the current output device.
+* <p>
+* If the current output representation is not yet complete then
+* the method will return false and the indicated
+* {@link ImageObserver} object will be notified as the
+* conversion process progresses.
+*
+* @param img       the image to be drawn
+* @param x         the x-coordinate of the northwest corner
+*                  of the destination rectangle in pixels
+* @param y         the y-coordinate of the northwest corner
+*                  of the destination rectangle in pixels
+* @param observer  the image observer to be notified as more
+*                  of the image is converted.  May be
+*                  <code>null</code>
+* @return          <code>true</code> if the image is completely
+*                  loaded and was painted successfully;
+*                  <code>false</code> otherwise.
+* @see             Image
+* @see             ImageObserver
+* @since           1.0
 */
 static const a = 5;
 
@@ -26,9 +48,9 @@ public AAA a(test as, asddas ab) {
 /**
 * test
 * hallo
-* @param as aaaaaaaaaaa
+* @params ab aaaaaaaaaaa
 */
-public a( as: test, ab :asddas ): AAA { }
+public AAA asdc(test as, asddas ab);
 
 
 

@@ -1,33 +1,29 @@
 import {DocCommentModel} from './DocCommentModel';
 import {codeModifiers, trimCharacters} from '../../utils/Utils';
+import {FunctionCodeObject} from '../codeObjectModels/FunctionCodeObject';
 
 export class FunctionDocCommentModel extends DocCommentModel {
-	returnValue: {
-		type: string,
-		description: string,
-	};
-	parameters: {
-		name: string,
-		type: string,
-		description: string,
-	}[];
+	codeObject: FunctionCodeObject;
 
-	constructor(docCommentModel: DocCommentModel) {
+	constructor(docCommentModel: DocCommentModel, codeObject: FunctionCodeObject) {
 		super();
 
 		Object.assign(this, docCommentModel);
 
-		this.extractParametersFromCodeSnippet();
-		this.extractFunctionNameAndType();
+		this.codeObject = codeObject;
+
+		// this.extractParametersFromCodeSnippet();
+		// this.extractFunctionNameAndType();
 		this.fillParametersFromAnnotations();
 	}
 
 	toString(): string {
 		let str = super.toString();
 
-		return ;
+		return str;
 	}
 
+	/*
 	private extractParametersFromCodeSnippet() {
 		const regExp = new RegExp('\\(.*\\)');
 		const match = this.codeObject.match(regExp);
@@ -71,16 +67,16 @@ export class FunctionDocCommentModel extends DocCommentModel {
 			type: '',
 			description: '',
 		}
-		if (declarationWithOutParameters.contains(':')) { // modifier name: type
-			const functionParts = declarationWithOutParameters.split(':'); // [modifier name, type]
+		if (declarationWithOutParameters.contains(':')) { // modifier codeObjectName: codeObjectType
+			const functionParts = declarationWithOutParameters.split(':'); // [modifier codeObjectName, codeObjectType]
 			this.returnValue.type = functionParts[1].trim();
-			const typelessFunctionParts = functionParts[0].split(' '); // [modifier, name]
-			this.name = typelessFunctionParts[typelessFunctionParts.length - 1];
+			const typelessFunctionParts = functionParts[0].split(' '); // [modifier, codeObjectName]
+			this.codeObjectName = typelessFunctionParts[typelessFunctionParts.length - 1];
 		} else {
-			const functionParts = declarationWithOutParameters.split(' '); // [modifier, type?, name]
-			this.name = functionParts[functionParts.length - 1].trim();
+			const functionParts = declarationWithOutParameters.split(' '); // [modifier, codeObjectType?, codeObjectName]
+			this.codeObjectName = functionParts[functionParts.length - 1].trim();
 			if (functionParts.length >= 2) {
-				let returnValueType = functionParts[functionParts.length - 2].trim(); // type or modifier
+				let returnValueType = functionParts[functionParts.length - 2].trim(); // codeObjectType or modifier
 
 				if (!codeModifiers.contains(returnValueType)) {
 					this.returnValue.type = returnValueType;
@@ -93,19 +89,21 @@ export class FunctionDocCommentModel extends DocCommentModel {
 		}
 
 	}
+	*/
 
 	private fillParametersFromAnnotations() {
 		for (const annotation of this.annotations) {
 			if (annotation.annotation === '@param' || annotation.annotation === '@params' || annotation.annotation === '@parameter') {
-				for (const parameter of this.parameters) {
+				for (const parameter of this.codeObject.parameters) {
 					if (parameter.name === annotation.value) {
 						parameter.description = annotation.description;
 					}
 				}
 			}
 			if (annotation.annotation === '@ret' || annotation.annotation === '@return' || annotation.annotation === '@returns') {
-				this.returnValue.description = annotation.value;
+				this.codeObject.returnValue.description = annotation.value;
 			}
 		}
 	}
+
 }

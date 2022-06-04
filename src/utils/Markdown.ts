@@ -59,4 +59,15 @@ export class Markdown {
 	static list(content: string[]): string {
 		return '- ' + content.join('\n- ');
 	}
+
+	static convertHTML(html: string) {
+		html = html.replace(/<\/?ul>/g, '');
+		html = html.replace(/<li>/g, '- ');
+		html = html.replace(/<\/li>/g, '');
+		html = html.replace(/<\/?p>/g, '\n');
+		html = html.replace(/<\/?code>/g, '\`');
+		html = html.replace(/\n\n\n/g, '\n\n');
+
+		return html;
+	}
 }

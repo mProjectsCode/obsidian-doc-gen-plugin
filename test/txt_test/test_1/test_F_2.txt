@@ -1,0 +1,23 @@
+12345
+/**
+* test
+* hallo
+* @params ab aaaaaaaaaaa
+*/
+public AAA a(test as, asddas ab)
+{
+	tesadf
+	sdf
+	sdf
+
+	/**
+    * test
+    * hallo
+    * @params ab aaaaaaaaaaa
+    */
+    public BB bb(test as, asddas ab) {
+    	tesadf
+    	sdf
+    	sdf
+    }
+}
