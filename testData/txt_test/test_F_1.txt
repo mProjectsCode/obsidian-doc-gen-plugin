@@ -46,6 +46,7 @@ public Test test1(Test param) {
 /**
 * normal function test with bracket on new line
 * @param param a test parameter
+* @name test2
 */
 public Test test2(Test param)
 {
@@ -55,11 +56,13 @@ public Test test2(Test param)
 /**
 * normal function test without body, with semicolon
 * @param param a test parameter
+* @parent test2
 */
 public Test test3(Test param);
 
 /**
 * normal function test without body
+* @parent test2
 */
 public Test test3(Test param)
 

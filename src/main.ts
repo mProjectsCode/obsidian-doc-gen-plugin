@@ -4,6 +4,7 @@ import {TestFileLoader} from './fileLoaders/TestFileLoader';
 import {FileParser} from './fileParsers/FileParser';
 import {VaultDirectoryModel} from './models/VaultDirectoryModel';
 import {VaultFileModel} from './models/VaultFileModel';
+import {InheritanceParser} from './fileParsers/InheritanceParser';
 
 
 export default class DocGenPlugin extends Plugin {
@@ -26,8 +27,14 @@ export default class DocGenPlugin extends Plugin {
 		const testFileLoader = new TestFileLoader();
 		const dirModel = await testFileLoader.load('H:/src/obsidian-doc-gen-plugin/testData/txt_test');
 		const fileParser = new FileParser();
-		const vaultDirModel = await fileParser.parseDirectory(dirModel);
+		let vaultDirModel = await fileParser.parseDirectory(dirModel);
+
 		console.log(vaultDirModel);
+
+		const inheritanceParser = new InheritanceParser(vaultDirModel);
+		inheritanceParser.parse();
+		inheritanceParser.updateDocCommentInheritance();
+		vaultDirModel = inheritanceParser.vaultDirectoryModel;
 
 		await this.createNotes(vaultDirModel);
 	}

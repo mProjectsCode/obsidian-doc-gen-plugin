@@ -21,6 +21,10 @@ export class VaultFileModel {
 		return content;
 	}
 
+	getFileName() {
+		return this.name.split('.')[0];
+	}
+
 	getMdFileName() {
 		return this.path.split('.')[0] + '.md';
 	}

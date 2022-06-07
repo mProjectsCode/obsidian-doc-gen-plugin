@@ -1,5 +1,6 @@
 import {Markdown} from '../utils/Markdown';
 import {CodeObject} from './CodeObject';
+import {DocCommentLinkModel} from './DocCommentLinkModel';
 
 export class DocCommentModel {
 	originalComment: string;
@@ -12,6 +13,9 @@ export class DocCommentModel {
 	}[];
 
 	codeObject: CodeObject;
+
+	childLinks: DocCommentLinkModel[];
+	parentLink: DocCommentLinkModel;
 
 	name: string;
 	description: string;
@@ -47,6 +51,7 @@ export class DocCommentModel {
 			this.originalComment = comment.comment;
 			this.codeObject = new CodeObject({codeObject: comment.codeObject});
 			this.commentIndex = comment.index;
+			this.childLinks = [];
 
 			this.cleanDocComment();
 			this.extractAnnotationsFromComment();
@@ -63,13 +68,15 @@ export class DocCommentModel {
 	};
 
 	toString(): string {
-		const heading = Markdown.h3(this.name || Markdown.code(this.codeObject.getFancyCodeObject()));
+		const heading = Markdown.h3(this.getName());
 
 		const body = Markdown.codeBlock(this.codeObject.getFancyCodeObject()) + '\n\n'
 			+ (this.deprecated ? '> [!WARNING] Deprecated\n\n' : '')
 			+ (this.description ? Markdown.blockQuotes(this.description) + '\n\n' : '')
 			+ (this.authors.length !== 0 ? `**Authors:** ${this.authors.join(', ')}\n` : '')
 			+ (this.since ? `**Since:** ${this.since}\n` : '')
+			+ (this.parent ? `**Parent:** ${this.parent}\n` : '')
+			+ (this.children.length !== 0 ? `**Children:** \n${Markdown.list(this.children)}\n` : '')
 			+ (this.exceptions.length !== 0 ? `**Exceptions:** \n\n${this.getExceptionsAsTable()}\n` : '')
 			+ (this.parameters.length !== 0 ? `**Parameters:** \n\n${this.getParametersAsTable()}\n` : '')
 			+ (this.returns ? `**Returns:** ${this.returns}\n` : '')
@@ -80,6 +87,10 @@ export class DocCommentModel {
 		// console.log(body);
 
 		return `${heading}\n${body}`;
+	}
+
+	getName() {
+		return this.name || Markdown.code(this.codeObject.getFancyCodeObject());
 	}
 
 	private cleanDocComment(): void {
@@ -167,7 +178,7 @@ export class DocCommentModel {
 
 		for (const annotation of this.annotations) {
 			if (annotation.annotation === '@name') {
-				this.name = annotation.value;
+				this.name = annotation.value.split('#').at(-1);
 			} else if (annotation.annotation === '@author') {
 				this.authors.push(DocCommentModel.getAnnotationValueAndDescription(annotation));
 			} else if (annotation.annotation === '@param' || annotation.annotation === '@parameter') {
