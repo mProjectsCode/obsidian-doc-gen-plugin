@@ -4,7 +4,8 @@ import {TestFileLoader} from './fileLoaders/TestFileLoader';
 import {FileParser} from './fileParsers/FileParser';
 import {VaultDirectoryModel} from './models/VaultDirectoryModel';
 import {VaultFileModel} from './models/VaultFileModel';
-import {InheritanceParser} from './fileParsers/InheritanceParser';
+import {ImportModal} from './modals/ImportModal';
+import {FileLoader} from './fileLoaders/FileLoader';
 
 
 export default class DocGenPlugin extends Plugin {
@@ -14,10 +15,23 @@ export default class DocGenPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', async (evt: MouseEvent) => {
-			await this.runTests();
+		const ribbonIconEl = this.addRibbonIcon('book', 'Generate Documentation', async (evt: MouseEvent) => {
+			new ImportModal(app, async (folderPath: string, fileTypes: string[]) => {
+				const fileLoader = new FileLoader();
+				const dirModel = await fileLoader.load(folderPath, fileTypes);
+				const fileParser = new FileParser(dirModel, this);
+				let vaultDirModel = await fileParser.parse();
+
+				await this.createNotes(vaultDirModel);
+			}).open();
 		});
 		ribbonIconEl.addClass('obsidian-doc-gen-plugin-ribbon-element');
+
+		this.addCommand({
+			id: 'run-doc-gen-tests',
+			name: 'Run doc gen tests. WARNING WILL NOT WORK ON YOUR PC!',
+			callback: async () => await this.runTests(),
+		});
 
 		// register the settings tab
 		this.addSettingTab(new DocGenSettingTab(this.app, this));
@@ -26,15 +40,8 @@ export default class DocGenPlugin extends Plugin {
 	async runTests() {
 		const testFileLoader = new TestFileLoader();
 		const dirModel = await testFileLoader.load('H:/src/obsidian-doc-gen-plugin/testData/txt_test');
-		const fileParser = new FileParser();
-		let vaultDirModel = await fileParser.parseDirectory(dirModel);
-
-		console.log(vaultDirModel);
-
-		const inheritanceParser = new InheritanceParser(vaultDirModel);
-		inheritanceParser.parse();
-		inheritanceParser.updateDocCommentInheritance();
-		vaultDirModel = inheritanceParser.vaultDirectoryModel;
+		const fileParser = new FileParser(dirModel, this);
+		let vaultDirModel = await fileParser.parse();
 
 		await this.createNotes(vaultDirModel);
 	}

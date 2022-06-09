@@ -33,5 +33,14 @@ export class VaultFileModel {
 		return this.path.split('/').slice(0, -1).join('/');
 	}
 
+	getDocCommentByName(name: string): DocCommentModel {
+		for (const docComment of this.docComments) {
+			if (docComment.getName() === name) {
+				return docComment;
+			}
+		}
+
+		return null;
+	}
 
 }

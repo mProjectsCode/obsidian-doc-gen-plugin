@@ -1,13 +1,14 @@
 import {VaultDirectoryModel} from '../models/VaultDirectoryModel';
-import {VaultFileModel} from '../models/VaultFileModel';
 import {DocCommentLinkModel} from '../models/DocCommentLinkModel';
+import {FileParser} from './FileParser';
 
 export class InheritanceParser {
 	vaultDirectoryModel: VaultDirectoryModel;
+	parser: FileParser;
 
-
-	constructor(vaultDirectoryModel: VaultDirectoryModel) {
+	constructor(vaultDirectoryModel: VaultDirectoryModel, parser: FileParser) {
 		this.vaultDirectoryModel = vaultDirectoryModel;
+		this.parser = parser;
 	}
 
 	parse() {
@@ -16,23 +17,6 @@ export class InheritanceParser {
 
 	updateDocCommentInheritance() {
 		this.vaultDirectoryModel = this.updateDocCommentInheritanceDirectory(this.vaultDirectoryModel);
-	}
-
-	findFile(vaultDirectoryModel: VaultDirectoryModel, fileName: string): VaultFileModel {
-		for (const file of vaultDirectoryModel.files) {
-			if (file.name.split('.')[0] === fileName) {
-				return file;
-			}
-		}
-
-		for (const subDirectory of vaultDirectoryModel.subDirectories) {
-			const fileModel = this.findFile(subDirectory, fileName);
-			if (fileModel) {
-				return fileModel;
-			}
-		}
-
-		return undefined;
 	}
 
 	private parseDirectory(vaultDirectoryModel: VaultDirectoryModel): VaultDirectoryModel {

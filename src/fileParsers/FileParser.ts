@@ -3,9 +3,34 @@ import {FileModel} from '../models/FileModel';
 import {DocCommentModel} from '../models/DocCommentModel';
 import {VaultFileModel} from '../models/VaultFileModel';
 import {VaultDirectoryModel} from '../models/VaultDirectoryModel';
+import DocGenPlugin from '../main';
+import {LinkParser} from './LinkParser';
+import {InheritanceParser} from './InheritanceParser';
 
 export class FileParser {
 	fileEndings: string[];
+	directoryModel: DirectoryModel;
+	plugin: DocGenPlugin;
+
+	linkParser: LinkParser;
+	inheritanceParser: InheritanceParser;
+
+	constructor(directoryModel: DirectoryModel, plugin: DocGenPlugin) {
+		this.directoryModel = directoryModel;
+		this.plugin = plugin;
+	}
+
+	async parse(): Promise<VaultDirectoryModel> {
+		let vaultDirectoryModel: VaultDirectoryModel = await this.parseDirectory(this.directoryModel);
+		this.linkParser = new LinkParser(vaultDirectoryModel);
+		this.inheritanceParser = new InheritanceParser(vaultDirectoryModel, this);
+
+		this.inheritanceParser.parse();
+		this.inheritanceParser.updateDocCommentInheritance();
+		vaultDirectoryModel = this.inheritanceParser.vaultDirectoryModel;
+
+		return vaultDirectoryModel;
+	}
 
 	async parseDirectory(directoryModel: DirectoryModel, localPath: string = ''): Promise<VaultDirectoryModel> {
 		const vaultDirectoryModel = new VaultDirectoryModel(directoryModel.name, `${localPath}/${directoryModel.name}`);
